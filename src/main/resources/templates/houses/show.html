@@ -167,7 +167,7 @@
 									 
 									 <div sec:authorize="isAuthenticated()" class="text-center">
 										 <h2>レビュー</h2>
-											 <a th:href="@{/houses/__${house.getId()}__/review}" class="btn text-white shadow-sm w-100 hirosetravel-btn">レビューを投稿する</a>
+											 <a th:href="@{/houses/__${house.getId()}__/postReview}" class="btn text-white shadow-sm w-100 hirosetravel-btn">レビューを投稿する</a>
 											 <div class="row row-cols-lg-2 row-cols-2 g-3 mb-5">
 												 <div class="card" th:each="review : ${review}">
 													 <div class="card-body">                                    

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.hirosetravel.entity.House;
 import com.example.hirosetravel.entity.Review;
 import com.example.hirosetravel.form.ReservationInputForm;
+import com.example.hirosetravel.form.ReviewPostForm;
 import com.example.hirosetravel.repository.HouseRepository;
 import com.example.hirosetravel.repository.ReviewRepository;
 
@@ -101,5 +102,11 @@ public class HouseController {
     	House house = HOUSE_REPOSITORY.getReferenceById(id);
     	model.addAttribute("house",house);
     	return "houses/review" ;
+    }
+    
+    @GetMapping("/{id}/postReview")
+    public String createReview(Model model) {
+    	model.addAttribute("postReviewForm",new ReviewPostForm());
+    	return "houses/show/postReview";
     }
 }
