@@ -25,23 +25,30 @@
                                  </ol>
                              </nav>
                              
-                             <h1 th:text="@{house.getName()+のレビュー投稿"></h1>
+                             <h1 th:text="${house.getName()+'にレビューを投稿'}"></h1>
                              
-                             <form method="post" th:action="@{/houses/__${house.getId()}__/show}" th:object="${postReviewForm}" enctype="multipart/form-data">
+                             <form method="post" th:action="@{/houses/createReview}" th:object="${reviewPostForm}">
 								 <div class="form-group mb-2">                                            
                                      <label class="col-form-label text-md-left fw-bold">評価</label>    
-                                     <div th:if="${#fields.hasErrors('score')}" class="text-danger small mb-2" th:errors="*{score}"></div>                                        
-                                     <option th:field="*{score}" autofocus></option>                                                                  
+                                     <div th:if="${#fields.hasErrors('score')}" class="text-danger small mb-2"></div>                                        
+                                     <select th:field="*{score}">
+										 <option value="1">&#9734;&#9734;&#9734;&#9734;&#9734;</option>
+										 <option value="2">&#9733;&#9734;&#9734;&#9734;&#9734;</option>
+										 <option value="3">&#9733;&#9733;&#9734;&#9734;&#9734;</option>
+										 <option value="4">&#9733;&#9733;&#9733;&#9734;&#9734;</option>
+										 <option value="5">&#9733;&#9733;&#9733;&#9733;&#9734;</option>
+										 <option value="6">&#9733;&#9733;&#9733;&#9733;&#9733;</option>
+									 </select>                                                                  
                                  </div>
 								 
 								 <div class="form-group mb-4">                                            
                                      <label class="col-form-label text-md-left fw-bold">コメント</label>  
-                                     <div th:if="${#fields.hasErrors('coment')}" class="text-danger small mb-2" th:errors="*{coment}"></div>                                          
-                                     <textaria class="form-control" th:field="*{coment}">                                                                     
+                                     <div class="text-danger small mb-2" th:if="${#fields.hasErrors('coment')}" th:errors="*{coment}"></div>                                          
+                                     <textarea class="form-control" th:field="*{coment}" cols="30" rows="5"></textarea>                                                                   
                                  </div>
 								 
 								 <div class="form-group">
-									 <button type="submit" class="btn text-while shadow-sm w-100 hirosetravel-btn">投稿</button>
+									 <button type="submit" class="btn text-white shadow-sm w-100 hirosetravel-btn">投稿</button>
 								 </div>
 							 </form>
                          </div>

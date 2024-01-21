@@ -10,18 +10,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.hirosetravel.entity.House;
+import com.example.hirosetravel.entity.Review;
 import com.example.hirosetravel.form.HouseEditForm;
 import com.example.hirosetravel.form.HouseRegisterForm;
+import com.example.hirosetravel.form.ReviewPostForm;
 import com.example.hirosetravel.repository.HouseRepository;
+import com.example.hirosetravel.repository.ReviewRepository;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class HouseService {
     private final HouseRepository houseRepository;
+    private final ReviewRepository reviewRepository;
     
-    public HouseService(HouseRepository houseRepository) {
+    public HouseService(HouseRepository houseRepository,ReviewRepository reviewRepository) {
     	this.houseRepository = houseRepository;
+    	this.reviewRepository = reviewRepository;
     }
     
     @Transactional
@@ -70,7 +75,16 @@ public class HouseService {
     	house.setPhoneNumber(houseEditForm.getPhoneNumber());
     	
     	houseRepository.save(house);
-    }    
+    }
+    
+    @Transactional
+    public void createReview(ReviewPostForm reviewPostForm) {
+    	Review review = new Review();
+    	review.setScore(reviewPostForm.getScore());
+    	review.setDescription(reviewPostForm.getComent());
+    	
+    	reviewRepository.save(review);
+    }
     
 	public String generateNewFileName(String imageName) {
 		String[] imageNames = imageName.split("\\.");
