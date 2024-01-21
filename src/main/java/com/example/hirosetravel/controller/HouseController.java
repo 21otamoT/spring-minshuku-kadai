@@ -107,6 +107,6 @@ public class HouseController {
     @GetMapping("/{id}/postReview")
     public String createReview(Model model) {
     	model.addAttribute("postReviewForm",new ReviewPostForm());
-    	return "houses/show/postReview";
+    	return "houses/postReview";
     }
 }
