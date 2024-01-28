@@ -6,37 +6,35 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.hirosetravel.entity.House;
 import com.example.hirosetravel.entity.Review;
+import com.example.hirosetravel.entity.User;
 import com.example.hirosetravel.form.ReservationInputForm;
-import com.example.hirosetravel.form.ReviewPostForm;
 import com.example.hirosetravel.repository.HouseRepository;
 import com.example.hirosetravel.repository.ReviewRepository;
-import com.example.hirosetravel.service.HouseService;
+import com.example.hirosetravel.security.UserDetailslmpl;
+import com.example.hirosetravel.service.ReviewService;
 
 @Controller
 @RequestMapping("/houses")
 public class HouseController {
     private final HouseRepository HOUSE_REPOSITORY;
     private final ReviewRepository REVIEW_REPOSITORY;
-    private final HouseService HOUSE_SERVICE;
+    private final ReviewService REVIEW_SERVISE; 
     
-    public HouseController(HouseRepository HOUSE_REPOSITORY, ReviewRepository REVIEW_REPOSITORY,HouseService HOUSE_SERVICE) {
+    public HouseController(HouseRepository HOUSE_REPOSITORY, ReviewRepository REVIEW_REPOSITORY,
+    		               ReviewService REVIEW_SERVISE) {
     	this.HOUSE_REPOSITORY = HOUSE_REPOSITORY;
     	this.REVIEW_REPOSITORY = REVIEW_REPOSITORY;
-    	this.HOUSE_SERVICE = HOUSE_SERVICE;
+    	this.REVIEW_SERVISE = REVIEW_SERVISE;
     }
     
     @GetMapping
@@ -94,42 +92,26 @@ public class HouseController {
     }
     
     @GetMapping("{id}")
-    public String show(@PathVariable(name = "id") Integer id, Model model) {
+    public String show(@PathVariable(name = "id") Integer id, Model model,
+    		           @AuthenticationPrincipal UserDetailslmpl userDetails) 
+    {
     	House house = HOUSE_REPOSITORY.getReferenceById(id);
-    	List<Review> review = REVIEW_REPOSITORY.findTop10ByOrderByCreatedAtDesc();
-    	
-    	model.addAttribute("house",house);
-    	model.addAttribute("reservationInputForm",new ReservationInputForm());
-    	model.addAttribute("review", review);
-    	
-    	return "houses/show";
-    }
-    
-    @GetMapping("{id}/review")
-    public String review(@PathVariable(name = "id") Integer id, Model model) {
-    	House house = HOUSE_REPOSITORY.getReferenceById(id);
-    	model.addAttribute("house",house);
-    	return "houses/review" ;
-    }
-    
-    @GetMapping("/{id}/postReview")
-    public String createReview(@PathVariable(name = "id") Integer id,Model model) {
-    	House house = HOUSE_REPOSITORY.getReferenceById(id);
-    	model.addAttribute("house", house);
-    	model.addAttribute("reviewPostForm",new ReviewPostForm());
-    	return "houses/postReview";
-    }
-    
-    @PostMapping("/createReview")
-    public String create(@ModelAttribute @Validated ReviewPostForm reviewPostForm,BindingResult bindingResult,
-    		RedirectAttributes redirectAttributes,Model model) {
-    	if (bindingResult.hasErrors()) {
-    		model.addAttribute("reviewPostForm", reviewPostForm);
-    		return "houses/postReview";
-    	}
-    	HOUSE_SERVICE.createReview(reviewPostForm);
-    	redirectAttributes.addFlashAttribute("successMessage", "評価を登録しました");
-    	
-    	return "redirect:/houses" ;
+    	List<Review> reviews = REVIEW_REPOSITORY.findByHouseId(id);
+    	// userDetails が null でない場合のみ userId を取得
+        Integer userId = null;
+        Integer houseId = null; 
+        if (userDetails != null) {
+            User user = userDetails.getUser();
+            userId = user.getId();
+            houseId = house.getId();
+        }
+        boolean hasUserId = REVIEW_SERVISE.hasUserReviewd(houseId,userId);
+        
+        model.addAttribute("hasUserId", hasUserId);
+        model.addAttribute("house", house);
+        model.addAttribute("reservationInputForm", new ReservationInputForm());
+        model.addAttribute("reviews", reviews);
+
+        return "houses/show";
     }
 }

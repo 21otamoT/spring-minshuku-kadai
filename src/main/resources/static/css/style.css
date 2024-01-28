@@ -140,8 +140,8 @@ footer div p {
    max-width: 300px;
 }
 
-.card {
-   gap: 20px;
+.review {
+   width:45%;
 }
 
 .review-star {

@@ -7,9 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -22,13 +19,11 @@ public class Review {
    @Column(name = "id")
    private Integer id;
    
-   @ManyToOne
-   @JoinColumn(name = "house_id")
-   private House house;
+   @Column(name = "house_id")
+   private Integer houseId;
    
-   @OneToOne
-   @JoinColumn(name = "user_id")
-   private User user;
+   @Column(name = "user_id")
+   private Integer userId;
    
    @Column(name = "name")
    private String name;

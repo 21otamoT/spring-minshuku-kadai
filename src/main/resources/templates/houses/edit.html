@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<head>
+		<div th:replace="~{fragment :: meta}"></div>   
+              
+        <div th:replace="~{fragment :: styles}"></div>
+        
+        <title>レビュー編集</title>
+	</head>
+	<body>
+		<div class="hirosetravel-wrapper">
+			<!-- ヘッダー -->
+            <div th:replace="~{fragment :: header}"></div>
+			
+			<main>
+				<div class="container pt-4 pb-5 hirosetravel-container">
+					<div class="row justify-content-center">
+						<nav class="mb-4" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+							<ol class="breadcrumb mb-0">                        
+                                 <li class="breadcrumb-item"><a th:href="@{/}">ホーム</a></li>
+                                 <li class="breadcrumb-item"><a th:href="@{/houses}">民宿一覧</a></li>
+                                 <li class="breadcrumb-item"><a th:href="@{/houses/__${house.getId()}__}">民宿詳細</a></li>
+                                 <li class="breadcrumb-item active" aria-current="page">レビュー編集</li>
+                             </ol>
+						</nav>
+						
+						<h1 class="mb-4 text-center" th:text="${house.getName() + 'のレビュー編集'}"></h1>
+						
+						<form method="post" th:action="@{/__${house.getId()}__/update}" th:object="${reviewEditForm}" enctype="multipart/form-data">
+							<input type="hidden" th:field="*{id}">
+							
+							<div class="d-flex mx-auto align-items-center justify-content-center m-3">
+									<label for="score" class="col-md-1 col-form-label text-md-left fw-bold">評価</label>
+								<div class="col-md-4">
+									<div th:if="${#fields.hasErrors('score')}" class="text-danger small mb-2" th:errors="*{score}"></div>
+									<select for="score" th:field="*{score}" class="w-100 review-star">
+										<option value="1">&#9733;&#9734;&#9734;&#9734;&#9734;</option>
+										<option value="2">&#9733;&#9733;&#9734;&#9734;&#9734;</option>
+										<option value="3">&#9733;&#9733;&#9733;&#9734;&#9734;</option>
+										<option value="4">&#9733;&#9733;&#9733;&#9733;&#9734;</option>
+										<option value="5">&#9733;&#9733;&#9733;&#9733;&#9733;</option>
+									</select> 
+								</div>
+							</div>
+							<div class="d-flex mx-auto justify-content-center m-3">
+								 <div class="col-md-1">
+                                     <label for="coment" class="col-form-label text-md-left fw-bold">コメント</label>
+                                 </div>
+                                 <div class="col-md-4">                            
+                                     <div th:if="${#fields.hasErrors('coment')}" class="text-danger small mb-2" th:errors="*{coment}"></div>                                        
+                                     <textarea class="form-control" th:field="*{coment}" cols="30" rows="5"></textarea>
+                                 </div>
+							</div>
+							<div class="form-group d-flex justify-content-center my-4">
+                               <button type="submit" class="btn text-white shadow-sm hirosetravel-btn">更新</button>
+                            </div>
+						</form>
+					</div>
+				</div>
+			</main>
+			
+			<!-- フッター -->
+	        <div th:replace="~{fragment :: footer}"></div>
+        
+        </div>
+        
+        <div th:replace="~{fragment :: scripts}"></div>
+	</body>
+</html>

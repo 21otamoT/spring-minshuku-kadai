@@ -28,21 +28,44 @@
                                  </ol>
                              </nav> 
                              
-                             <div class="container">  
-                                 <div class="row">
-                                     <div class="col-lg-8 container mb-4">            
-                                         <div class="row pb-2 mb-2 border-bottom">
-                                             <div class="col-4">
-                                                 <span class="fw-bold">民宿名</span>
-                                             </div>
-                     
-                                             <div class="col">
-                                                 
-                                             </div>
-                                         </div>                                                    
-                                     </div>                                                                                                                     
-                                 </div>                                                                                             
+                             <div class="container">            
+                                 <div class="row row-cols-lg-2 row-cols-2 justify-content-center mb-5 gap-3">
+                                     <div th:each="review : ${reviewPage}" class="card review">
+										 <div class="card-body">
+                                             <h3 th:text="${review.getName()}" class="card-title"></h3>
+                                             <p class="card-text mb-1">
+												 <span th:utext="${'&#9733;'.repeat(review.getScore())}" class="review-star"></span>
+												 <span th:utext="${'&#9734;'.repeat(5-review.getScore())}" class="review-star"></span>
+											 </p>
+											 <p class="card-text mb-1">
+												 <time th:text="${#dates.format(review.getCreatedAt(), 'yyyy年M月d日')}"></time>
+											 </p>
+											 <p class="card-text">
+												 <span th:text="${review.getDescription()}"></span>
+											 </p>
+                                         </div>
+                                     </div>
+                                 </div>                                                                                                                                                 
                              </div>
+                             <!-- ページネーション -->
+                             <div th:if="${reviewPage.getTotalPages() > 1}" class="d-flex justify-content-center">
+                                 <nav aria-label="レビュー一覧">
+                                     <ul class="pagination">
+                                         <li class="page-item">
+                                             <span th:if="${reviewPage.isFirst()}" class="page-link disabled">前</span>
+                                             <a th:unless="${reviewPage.isFirst()}" th:href="@{/__${house.getId()}__/review(page = ${reviewPage.getNumber() - 1})}" class="page-link hirosetravel-page-link">前</a>
+                                         </li>
+                                         <li th:each="i : ${#numbers.sequence(0, reviewPage.getTotalPages() - 1)}" class="page-item">
+                                             <span th:if="${i == reviewPage.getNumber()}" class="page-link active hirosetravel-active" th:text="${i + 1}"></span>
+                                             <a th:unless="${i == reviewPage.getNumber()}" th:href="@{/__${house.getId()}__/review(page = ${i})}" class="page-link hirosetravel-page-link" th:text="${i + 1}"></a>
+                                         </li>
+                                         <li class="page-item">                        
+                                             <span th:if="${reviewPage.isLast()}" class="page-link disabled">次</span>
+                                             <a th:unless="${reviewPage.isLast()}" th:href="@{/__${house.getId()}__/review(page = ${reviewPage.getNumber() + 1})}" class="page-link hirosetravel-page-link">次</a>
+                                         </li>
+                                     </ul>
+                                 </nav> 
+                             </div>  
                          </div>
                      </div>
                  </div>
